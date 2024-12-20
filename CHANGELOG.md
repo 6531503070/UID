@@ -4,7 +4,7 @@
 
 - Added `Token:Clone()`
 - Added `Token:NextBase256ASCII()`, recommend instance attribute case.
-- Added `Token:NextBase94JSONSAFE()`, recommend json codec, datastore use case.
+- Added `Token:NextBase94JSONSAFE()`, recommend json codec, datastore case.
 - Improve speed performance with table allocation.
 
 ## 1.0.0
