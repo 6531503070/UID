@@ -1,14 +1,17 @@
 --[[
 	@Dev_Bas
-	Token v1.0.0:
+	Token v2.0.0:
 	A typed roblox module for generate token to represent an uniqueness.
 ]]
 
 --!native
 --!optimize 2
 
+local HttpService = game:GetService("HttpService")
+local GenerateGUID = HttpService.GenerateGUID
 local GlobalRandomizer = Random.new()
 local NextInteger = GlobalRandomizer.NextInteger
+local STRING_CACHES = table.create(16)
 
 --[=[
 	class Token
@@ -29,7 +32,7 @@ function Token.new(seed: number?)
 	}, Token)
 end
 
-type TokenBase = ("Base64URL" | "Hex" | "GUID")
+type TokenBase = ("Base256ASCII" | "Base94JSONSAFE" | "Base64URL" | "Hex" | "GUID")
 
 function Token.isbase(token: string, tokenBase: TokenBase): boolean
 	if tokenBase == "Hex" then
@@ -41,9 +44,6 @@ function Token.isbase(token: string, tokenBase: TokenBase): boolean
 	end
 	return false
 end
-
-local HttpService = game:GetService("HttpService")
-local GenerateGUID = HttpService.GenerateGUID
 
 --[=[
 	Returns a GUID string. (HttpService optimized)
@@ -58,6 +58,78 @@ end
 
 type Token = typeof(Token.new())
 
+--- Takes an array of bytes and builds a string out of it.
+--- Uses `7997` byte chunks to make the string, which ends up being very fast.
+local function stringBuilder(input: {number}): string
+	local inputLength = #input
+	for i = 1, inputLength, 7997 do
+		local j = math.min(i + 7996, inputLength)
+		table.insert(STRING_CACHES, string.char(table.unpack(input, i, j)))
+	end
+	local blockOfString = table.concat(STRING_CACHES)
+	table.clear(STRING_CACHES)
+	return blockOfString
+end
+
+--[=[
+	Returns a random Base256ASCII string.
+	If the method were call with no token generator, it'll using global token generator by default.
+	-- Useful for case, attribute use.
+	-- Avoid for case, json codec, datastore serdes use.
+<strong>
+	@param length: number --Uniqueness is (256 ^ length) possibility.
+
+	@return string --token Base256ASCII
+</strong><p><em>--Style: Moonwave Documentation</em>
+]=]
+function Token:NextBase256ASCII(length: number)
+	local self = self :: Token
+	local Randomizer = self.Randomizer or GlobalRandomizer
+	local block = table.create(length)
+	for i = 1, length do
+		block[i] = NextInteger(Randomizer, 0, 255)
+	end
+	return stringBuilder(block)
+end
+
+local blockBase94JSONSAFE = table.create(16)
+local BASE_94_JSONSAFE_CHARACTERS = {
+	"0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+	"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p",
+	"q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+	"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P",
+	"Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+	"!", "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":",
+	";", "<", "=", ">", "?", "@", "[", "]", "^", "_", "`", "{", "|", "}", "~",
+	string.char(127)
+}
+
+--[=[
+	Returns a random Base94JSONSAFE string.
+	If the method were call with no token generator, it'll using global token generator by default.
+	-- Useful for case, json codec, datastore serdes use.
+	-- Not recommend for case, redeem code use hard to writing for human.
+<strong>
+	@param length: number --Uniqueness is (256 ^ length) possibility.
+
+	@return string --token Base94JSONSAFE
+</strong><p><em>--Style: Moonwave Documentation</em>
+]=]
+function Token:NextBase94JSONSAFE(length: number)
+	local self = self :: Token
+	local Randomizer = self.Randomizer or GlobalRandomizer
+	for i = 1, length do
+		blockBase94JSONSAFE[i] = NextInteger(Randomizer, 1, #BASE_94_JSONSAFE_CHARACTERS)
+	end
+	for i, byte in ipairs(blockBase94JSONSAFE) do
+		blockBase94JSONSAFE[i] = BASE_94_JSONSAFE_CHARACTERS[byte]
+	end
+	local blockOfString = table.concat(blockBase94JSONSAFE)
+	table.clear(blockBase94JSONSAFE)
+	return blockOfString
+end
+
+local blockBase64URL = table.create(16)
 local BASE_64_URL_CHARACTERS = {
 	"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P",
 	"Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f",
@@ -68,6 +140,7 @@ local BASE_64_URL_CHARACTERS = {
 --[=[
 	Returns a random Base64URL string.
 	If the method were call with no token generator, it'll using global token generator by default.
+	-- Useful for case, general use good balance between easy to write and uniqueness.
 <strong>
 	@param length: number --Uniqueness is (64 ^ length) possibility.
 
@@ -77,42 +150,44 @@ local BASE_64_URL_CHARACTERS = {
 function Token:NextBase64URL(length: number)
 	local self = self :: Token
 	local Randomizer = self.Randomizer or GlobalRandomizer
-	local block = table.create(length)
 	for i = 1, length do
-		block[i] = NextInteger(Randomizer, 1, #BASE_64_URL_CHARACTERS)
+		blockBase64URL[i] = NextInteger(Randomizer, 1, 64)
 	end
-	for i, byte in ipairs(block) do
-		block[i] = BASE_64_URL_CHARACTERS[byte]
+	for i, byte in ipairs(blockBase64URL) do
+		blockBase64URL[i] = BASE_64_URL_CHARACTERS[byte]
 	end
-	return table.concat(block)
+	local blockOfString = table.concat(blockBase64URL)
+	table.clear(blockBase64URL)
+	return blockOfString
 end
 
--- why C13 because if C14 it is consider unsafe for random an integer since 16^14 > 2^53 (53 bit) while 16^13 < 2^53 which is safe.
-local min16C13, max16C13 = 16 ^ (13 - 1) - 1, 16 ^ 13 - 1 
---- Takes an array of bytes and builds a string out of it.
---- Uses `4096` byte chunks to make the string, which ends up being very fast.
-local function process16C13(Randomizer: Random, length: number): {number}
-	local iteration = length // 13
-	local blockOf16C13 = table.create(iteration + 1)
+local blockOf16C15 = table.create(16)
+local min16C15, max16C15 = 16 ^ (15 - 1) - 1, 16 ^ 15 - 1 
+--- update table reuse, extend to be C15.
+--- since NextInteger can still random correctly and not pass the breaking point which is >9223372036854775000.
+local function process16C15(Randomizer: Random, length: number): {number}
+	local iteration = length // 15
 	for i = 1, iteration do
-		blockOf16C13[i] = NextInteger(Randomizer, min16C13, max16C13) -- 13
+		blockOf16C15[i] = NextInteger(Randomizer, min16C15, max16C15) -- 13
 	end
-	local remainder = length % 13
+	local remainder = length % 15
 	if remainder > 0 then
-		blockOf16C13[#blockOf16C13 + 1] = NextInteger(Randomizer, 16 ^ (remainder - 1) - 1, 16 ^ remainder - 1)
+		blockOf16C15[iteration + 1] = NextInteger(Randomizer, 16 ^ (remainder - 1) - 1, 16 ^ remainder - 1)
 	end
-	return blockOf16C13
+	return blockOf16C15
 end
-local STRING_HEXS = table.create(5)
-local function buildHexBlock16C13(input: {number}): string
+
+--- Takes an array of bytes and builds a string out of it.
+--- Uses `7997` byte chunks to make the string, which ends up being very fast.
+local function stringBuilderHexBlock16C15(input: {number}): string
 	local inputLength = #input
-	for i = 1, inputLength, 4096 do
-		local j = math.min(i + 4095, inputLength)
+	for i = 1, inputLength, 7997 do
+		local j = math.min(i + 7996, inputLength)
 		local alloc = (j - i) + 1
-		table.insert(STRING_HEXS, string.format(string.rep([[%x]], alloc), table.unpack(input, i, j)))
+		table.insert(STRING_CACHES, string.format(string.rep([[%x]], alloc), table.unpack(input, i, j)))
 	end
-	local blockOfString = table.concat(STRING_HEXS)
-	table.clear(STRING_HEXS)
+	local blockOfString = table.concat(STRING_CACHES)
+	table.clear(STRING_CACHES)
 	return blockOfString
 end
 
@@ -128,8 +203,21 @@ end
 function Token:NextHex(length: number)	
 	local self = self :: Token
 	local Randomizer = self.Randomizer or GlobalRandomizer
-	local blockOf16C13 = process16C13(Randomizer, length)
-	return buildHexBlock16C13(blockOf16C13)
+	local blockOf16C13 = process16C15(Randomizer, length)
+	return stringBuilderHexBlock16C15(blockOf16C13)
+end
+
+--[=[
+	Returns a new token object with the same state as the original.
+<strong>
+	@return Token
+</strong><p><em>--Style: Moonwave Documentation</em>
+]=]
+function Token:Clone()
+	local self = self :: Token
+	local newTokenObject = table.clone(self)
+	newTokenObject.Randomizer = typeof(self.Randomizer) == "Random" and self.Randomizer:Clone() or nil
+	return setmetatable(newTokenObject, Token)
 end
 
 return Token
