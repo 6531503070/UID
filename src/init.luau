@@ -1,6 +1,6 @@
 --[[
 	@Dev_Bas
-	Token v2.0.0:
+	Token v2.0.1:
 	A typed roblox module for generate token to represent an uniqueness.
 ]]
 
@@ -37,10 +37,14 @@ type TokenBase = ("Base256ASCII" | "Base94JSONSAFE" | "Base64URL" | "Hex" | "GUI
 function Token.isbase(token: string, tokenBase: TokenBase): boolean
 	if tokenBase == "Hex" then
 		return string.find(token, "^[0-9A-Fa-f]+$") ~= nil
-	elseif tokenBase == "Base64URL" then
-		return string.find(token, "^[A-Za-z0-9%-_]+$") ~= nil
 	elseif tokenBase == "GUID" then
 		return string.find(token, "^%x%x%x%x%x%x%x%x%-%x%x%x%x%-%x%x%x%x%-%x%x%x%x%-%x%x%x%x%x%x%x%x%x%x%x%x$") ~= nil
+	elseif tokenBase == "Base64URL" then
+		return string.find(token, "^[A-Za-z0-9%-_]+$") ~= nil
+	elseif tokenBase == "Base94JSONSAFE" then
+		return string.find(token, "^[0-9a-zA-Z!#$%%&'()*+,-./:;<=>?@%[%]^_`{|}~"..string.char(127).."]+$") ~= nil
+	elseif tokenBase == "Base256ASCII" then 
+		return true -- since every text character, emoji based from ascii fundamental level.
 	end
 	return false
 end
@@ -110,7 +114,7 @@ local BASE_94_JSONSAFE_CHARACTERS = {
 	-- Useful for case, json codec, datastore serdes use.
 	-- Not recommend for case, redeem code use hard to writing for human.
 <strong>
-	@param length: number --Uniqueness is (256 ^ length) possibility.
+	@param length: number --Uniqueness is (94 ^ length) possibility.
 
 	@return string --token Base94JSONSAFE
 </strong><p><em>--Style: Moonwave Documentation</em>
@@ -167,6 +171,7 @@ local min16C15, max16C15 = 16 ^ (15 - 1) - 1, 16 ^ 15 - 1
 --- since NextInteger can still random correctly and not pass the breaking point which is >9223372036854775000.
 local function process16C15(Randomizer: Random, length: number): {number}
 	local iteration = length // 15
+	table.clear(blockOf16C15)
 	for i = 1, iteration do
 		blockOf16C15[i] = NextInteger(Randomizer, min16C15, max16C15) -- 13
 	end
