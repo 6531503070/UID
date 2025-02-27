@@ -1,1 +1,23 @@
+*.rbxlx
+*.rbxl
+
+*.rbxlx.lock
+*.rbxl.lock
+
+/sourcemap.json
+
+# Wally
+/Packages
+/DevPackages
+
+/examples/*/Packages
+/examples/*/wally.lock
+
+# Moonwave
+/build
+
+# My
 /assets
+/docs
+/examples
+/test
