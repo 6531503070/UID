@@ -1,18 +1,10 @@
 [package]
 name = "6531503070/token"
-version = "2.0.2"
-registry = "https://github.com/UpliftGames/wally-index"
-licence = "MIT"
-authors = ["6531503070"]
 description = "A typed roblox module for generate token to represent an uniqueness"
+version = "2.0.4"
+registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
-exclude = ["**"]
-include = [
-    "default.project.json",
-    "src",
-    "src/**",
-    "LICENSE",
-    "wally.toml",
-]
-
-[dependencies]
+license = "MIT"
+authors = [ "6531503070" ]
+exclude = [ "**" ]
+include = [ "src", "src/**", "wally.toml", "wally.lock", "default.project.json", "LICENSE.md" ]

@@ -1,7 +1,7 @@
 --[[
 	@Dev_Bas
 	Token v2.0.2:
-	A typed roblox module for generate token to represent an uniqueness
+	A typed Roblox module for generating tokens to represent uniqueness.
 ]]
 
 --!native
@@ -13,17 +13,17 @@ local GlobalRandomizer = Random.new()
 local NextInteger = GlobalRandomizer.NextInteger
 
 --[=[
-	class Token
+	@class Token
+	A utility class for generating unique tokens in various formats.
 ]=]
 local Token = {}
 Token.__index = Token
 
 --[=[
-	Returns a new token generator using an optional seed.
-	Seed number must be in range [-9007199254740991, 9007199254740991]. (53 bit integer)
-<strong>
-	@return Token
-</strong><p><em>--Style: Moonwave Documentation</em>
+	@within Token
+	@function new
+	@param seed number? -- Optional seed for the randomizer. Must be in range [-9007199254740991, 9007199254740991].
+	@return Token -- A new Token generator instance.
 ]=]
 function Token.new(seed: number?)
 	return setmetatable({
@@ -33,6 +33,13 @@ end
 
 type TokenBase = ("Base256ASCII" | "Base94JSONSAFE" | "Base64URL" | "Hex" | "GUID")
 
+--[=[
+	@within Token
+	@function isbase
+	@param token string -- The token to validate.
+	@param tokenBase TokenBase -- The base format to validate against.
+	@return boolean -- Whether the token matches the specified base format.
+]=]
 function Token.isbase(token: string, tokenBase: TokenBase): boolean
 	if tokenBase == "Hex" then
 		return string.find(token, "^[0-9A-Fa-f]+$") ~= nil
@@ -43,18 +50,16 @@ function Token.isbase(token: string, tokenBase: TokenBase): boolean
 	elseif tokenBase == "Base94JSONSAFE" then
 		return string.find(token, "^[0-9a-zA-Z!#$%%&'()*+,-./:;<=>?@%[%]^_`{|}~"..string.char(127).."]+$") ~= nil
 	elseif tokenBase == "Base256ASCII" then 
-		return true -- since every text character, emoji based from ascii fundamental level.
+		return true -- Since every text character, emoji is based on ASCII at a fundamental level.
 	end
 	
 	return false
 end
 
 --[=[
-	Returns a GUID string. (HttpService optimized)
-	Uniqueness is 2^128 possibility. (128 bit)
-<strong>
-	@return string --token GUID
-</strong><p><em>--Style: Moonwave Documentation</em>
+	@within Token
+	@function guid
+	@return string -- A GUID string. Uniqueness is 2^128 possibilities (128-bit).
 ]=]
 function Token.guid()
 	return GenerateGUID(HttpService, false)
@@ -64,8 +69,7 @@ type Token = typeof(Token.new())
 
 local STRING_CACHES = table.create(16)
 
---- Takes an array of bytes and builds a string out of it.
---- Uses `7997` byte chunks to make the string, which ends up being very fast.
+--- Internal function to build a string from an array of bytes.
 local function stringBuilder(input: {number}, length: number?): string
 	local inputLength = if length then math.min(#input, length) else #input
 	
@@ -83,15 +87,10 @@ end
 local blockBase256ASCII = table.create(32, 0)
 
 --[=[
-	Returns a random Base256ASCII string.
-	If the method were call with no token generator, it'll using global token generator by default.
-	-- Useful for case, attribute use.
-	-- Avoid for case, json codec, datastore serdes use.
-<strong>
-	@param length: number --Uniqueness is (256 ^ length) possibility.
-
-	@return string --token Base256ASCII
-</strong><p><em>--Style: Moonwave Documentation</em>
+	@within Token
+	@function NextBase256ASCII
+	@param length number -- The length of the token. Uniqueness is (256 ^ length) possibilities.
+	@return string -- A random Base256ASCII string.
 ]=]
 function Token:NextBase256ASCII(length: number)
 	local self = self :: Token
@@ -118,15 +117,10 @@ local BASE_94_JSONSAFE_CHARACTERS = {
 }
 
 --[=[
-	Returns a random Base94JSONSAFE string.
-	If the method were call with no token generator, it'll using global token generator by default.
-	-- Useful for case, json codec, datastore serdes use.
-	-- Not recommend for case, redeem code use hard to writing for human.
-<strong>
-	@param length: number --Uniqueness is (94 ^ length) possibility.
-
-	@return string --token Base94JSONSAFE
-</strong><p><em>--Style: Moonwave Documentation</em>
+	@within Token
+	@function NextBase94JSONSAFE
+	@param length number -- The length of the token. Uniqueness is (94 ^ length) possibilities.
+	@return string -- A random Base94JSONSAFE string.
 ]=]
 function Token:NextBase94JSONSAFE(length: number)
 	local self = self :: Token
@@ -153,14 +147,10 @@ local BASE_64_URL_CHARACTERS = {
 }
 
 --[=[
-	Returns a random Base64URL string.
-	If the method were call with no token generator, it'll using global token generator by default.
-	-- Useful for case, general use good balance between easy to write and uniqueness.
-<strong>
-	@param length: number --Uniqueness is (64 ^ length) possibility.
-
-	@return string --token Base64URL
-</strong><p><em>--Style: Moonwave Documentation</em>
+	@within Token
+	@function NextBase64URL
+	@param length number -- The length of the token. Uniqueness is (64 ^ length) possibilities.
+	@return string -- A random Base64URL string.
 ]=]
 function Token:NextBase64URL(length: number)
 	local self = self :: Token
@@ -179,15 +169,15 @@ end
 
 local blockOf16C15 = table.create(16)
 local min16C15, max16C15 = 16 ^ (15 - 1) - 1, 16 ^ 15 - 1 
---- update table reuse, extend to be C15.
---- since NextInteger can still random correctly and not pass the breaking point which is >9223372036854775000.
+
+--- Internal function to process Hex blocks.
 local function process16C15(Randomizer: Random, length: number): {number}
 	local iteration = length // 15
 	
 	table.clear(blockOf16C15)
 	
 	for i = 1, iteration do
-		blockOf16C15[i] = NextInteger(Randomizer, min16C15, max16C15) -- 13
+		blockOf16C15[i] = NextInteger(Randomizer, min16C15, max16C15)
 	end
 	
 	local remainder = length % 15
@@ -199,8 +189,7 @@ local function process16C15(Randomizer: Random, length: number): {number}
 	return blockOf16C15
 end
 
---- Takes an array of bytes and builds a string out of it.
---- Uses `7997` byte chunks to make the string, which ends up being very fast.
+--- Internal function to build a Hex string from processed blocks.
 local function stringBuilderHexBlock16C15(input: {number}): string
 	local inputLength = #input
 	
@@ -218,13 +207,10 @@ local function stringBuilderHexBlock16C15(input: {number}): string
 end
 
 --[=[
-	Returns a random Hex string.
-	If the method were call with no token generator, it'll using global token generator by default.
-<strong>
-	@param length: number --Uniqueness is (16 ^ length) possibility.
-
-	@return string --token Hex
-</strong><p><em>--Style: Moonwave Documentation</em>
+	@within Token
+	@function NextHex
+	@param length number -- The length of the token. Uniqueness is (16 ^ length) possibilities.
+	@return string -- A random Hex string.
 ]=]
 function Token:NextHex(length: number)	
 	local self = self :: Token
@@ -235,10 +221,9 @@ function Token:NextHex(length: number)
 end
 
 --[=[
-	Returns a new token object with the same state as the original.
-<strong>
-	@return Token
-</strong><p><em>--Style: Moonwave Documentation</em>
+	@within Token
+	@function Clone
+	@return Token -- A new Token object with the same state as the original.
 ]=]
 function Token:Clone()
 	local self = self :: Token
