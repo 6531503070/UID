@@ -1,7 +1,7 @@
 [package]
 name = "6531503070/token"
 description = "A typed roblox module for generate token to represent an uniqueness"
-version = "2.0.4"
+version = "2.0.5"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 license = "MIT"
