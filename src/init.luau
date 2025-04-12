@@ -1,6 +1,6 @@
 --[[
 	@Dev_Bas
-	Token v2.0.2:
+	Token v3.0.0:
 	A typed Roblox module for generating tokens to represent uniqueness.
 ]]
 
