@@ -1,3 +1,6 @@
+[home]
+enabled = true
+includeReadme = false
 title = "UID"
 gitRepoUrl = "https://github.com/6531503070/UID"
 gitSourceBranch = "main"
@@ -11,10 +14,6 @@ onBrokenLinks = "throw"
 onBrokenMarkdownLinks = "warn"
 tagline = "An uid generator to represent an uniqueness for Roblox"
 baseUrl = "/uid/"
-
-[home]
-enabled = true
-includeReadme = false
 
 [[home.features]]
 title = "Flexible"
