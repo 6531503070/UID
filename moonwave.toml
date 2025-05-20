@@ -10,7 +10,7 @@ classes = ["UID"]
 onBrokenLinks = "throw"
 onBrokenMarkdownLinks = "warn"
 tagline = "An uid generator to represent an uniqueness for Roblox"
-baseUrl = "/uid/"
+baseUrl = "/UID/"
 
 [home]
 enabled = true
