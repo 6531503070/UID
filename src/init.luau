@@ -12,6 +12,17 @@ local NextInteger = GlobalRandomizer.NextInteger
 --[=[
 	@class UID
 	An uid generator to represent an uniqueness for Roblox
+
+	```lua
+	local UID = require(script.Parent)
+	local uid = UID.new()
+
+	local base256ASCII = uid:NextBase256ASCII(16)
+	local base94JSONSAFE = uid:NextBase94JSONSAFE(16)
+	local base64URL = uid:NextBase64URL(16)
+	local hex = uid:NextHex(16)
+	local guid = uid:guid()
+	```
 ]=]
 local UID = {}
 UID.__index = UID
