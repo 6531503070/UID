@@ -1,15 +1,51 @@
 {
-    "editor.formatOnSave": false,
+    // luau-lsp
+    "editor.formatOnSave": true,
     "luau-lsp.plugin.enabled": true,
-    "luau-lsp.plugin.port": 3668,
+    "luau-lsp.plugin.port": 3667,
     "luau-lsp.completion.imports.enabled": true,
     "luau-lsp.completion.imports.suggestServices": true,
+    "luau-lsp.completion.imports.separateGroupsWithLine": true,
     "luau-lsp.completion.imports.suggestRequires": true,
+    "luau-lsp.plugin.maximumRequestBodySize": 10000000,
+    "luau-lsp.completion.imports.ignoreGlobs": [
+        "**/_Index/**",
+        "node_modules/**",
+        "packages/**",
+        "roblox-packages/**",
+    ],
     "luau-lsp.fflags.override": {
-        "LuauTypeSolverRelease": "650",
+        // "LuauTypeSolverRelease": "650",
         "LuauSolverV2": "true",
+        "LuauTarjanChildLimit": "0",
+        "LuauTypeInferIterationLimit": "0",
+        "LuauUserDefinedTypeFunctionsSyntax2": "true",
+        "LuauUserDefinedTypeFunctions2": "true",
         "LuauNewSolverPopulateTableLocations": "true",
         "LuauNewSolverPrePopulateClasses": "true"
     },
-    "stylua.targetReleaseVersion": "latest"
+    "[lua]": {
+        "editor.defaultFormatter": "JohnnyMorganz.stylua"
+    },
+    "[luau]": {
+        "editor.defaultFormatter": "JohnnyMorganz.stylua"
+    },
+
+    // Glassit
+    "glassit.alpha": 240,
+    "glassit.step": 100,
+    "glassit.force_sway": true,
+
+    // Stylua
+    "stylua.targetReleaseVersion": "latest",
+
+    // Bracket Pair Colorization
+    "editor.bracketPairColorization.enabled": true,
+    "editor.guides.bracketPairsHorizontal": "active",
+    "editor.guides.bracketPairs":"active",
+
+    // indent-rainbow
+    "indentRainbow.includedLanguages": [], // for example ["nim", "nims", "python"]
+    "indentRainbow.excludedLanguages": ["plaintext"],
+    "indentRainbow.updateDelay": 100 // 10 makes it super fast but may cost more resources
 }

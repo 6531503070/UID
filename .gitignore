@@ -1,25 +1,44 @@
-.vscode/*
+# IDE files
+.vscode/
+.idea/
+.env
+.aider*
+.cursorrules
+.cursor
+.mcp
+_ARCHIVED
+js-to-lua
+moonwavegen
 
-*.rbxlx
+# Roblox Studio files
 *.rbxl
+*.rbxlx
+*.rbxm
+*.rbxmx
 
-*.rbxlx.lock
-*.rbxl.lock
+# Roblox Studio repositories
+StarterGui
 
-/sourcemap.json
-
-# Wally
-/Packages
-/DevPackages
-
-/examples/*/Packages
-/examples/*/wally.lock
-
-# Moonwave
+# Moonwave build output
 /build
 
-# My
+# Rojo files
+/rojo-test.rbxl
+/rojo-test.rbxlx
+
+# Packages directory
+/Packages/
+
+# OS files
+.DS_Store
+Thumbs.db 
+*.zip
+packages/*/Packages
+node_modules
+/sourcemap.json
 /assets
-/docs
-/examples
-/test
+/test/Packages
+/test/modules
+package.json
+package-lock.json
+/DevPackages

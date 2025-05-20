@@ -1,10 +1,17 @@
 [package]
-name = "6531503070/token"
-description = "A typed roblox module for generate token to represent an uniqueness"
-version = "3.0.1"
+name = "6531503070/uid"
+description = "A uid generator to represent an uniqueness for luau"
+version = "1.0.0"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 license = "MIT"
-authors = [ "6531503070" ]
-exclude = [ "**" ]
-include = [ "src", "src/**", "wally.toml", "wally.lock", "default.project.json", "LICENSE.md" ]
+authors = ["6531503070"]
+exclude = ["**"]
+include = [
+    "src",
+    "src/**",
+    "wally.toml",
+    "wally.lock",
+    "default.project.json",
+    "LICENSE.md",
+]

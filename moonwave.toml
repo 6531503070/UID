@@ -1,3 +1,9 @@
+title = "UID"
+gitRepoUrl = "https://github.com/6531503070/UID"
+gitSourceBranch = "main"
+changelog = true
+classOrder = ["UID"]
+
 [home]
 enabled = true
 includeReadme = false

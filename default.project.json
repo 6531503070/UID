@@ -1,6 +1,9 @@
 {
-  "name": "Token",
+  "name": "UID",
   "tree": {
-    "$path": "src"
+    "$path": "src",
+    "DevPackages": {
+      "$path": "DevPackages"
+    }
   }
 }
