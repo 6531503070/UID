@@ -1,51 +1,29 @@
-# name: Publish Docs
-
-# on:
-#   push:
-#     branches:
-#       - main
-#   workflow_dispatch:
-
-# jobs:
-#   build:
-#     name: Build and deploy docs
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v2
-#       - uses: actions/setup-node@v2
-#         with:
-#           node-version: "18"
-#       - run: npm i -g moonwave@latest
-#       - name: Publish
-#         run: |
-#           git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-#           git config --global user.email "support+actions@github.com"
-#           git config --global user.name "github-actions-bot"
-#           moonwave build --publish
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-name: Deploy Docs
+name: Publish Docs
 
 on:
-  push:
-    branches: [main]
-
-permissions:
-  contents: write
+  workflow_dispatch:
+  workflow_call:
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+  publish:
+    runs-on: [ubuntu-latest]
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
-          node-version: '18'
-      - run: npm ci
-      - run: npm run build # or moonwave build
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
+          node-version: "18"
+
+      - name: Install Moonwave
+        run: npm install -g moonwave@latest
+
+      - name: Build & Publish Docs
+        run: |
+          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+          git config --global user.email "support+actions@github.com"
+          git config --global user.name "github-actions-bot"
+          moonwave build --publish
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
