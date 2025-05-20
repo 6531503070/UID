@@ -12,3 +12,5 @@ An uid generator to represent an uniqueness for Roblox
 ## Find the documentation
 
 - [Documentation](https://6531503070.github.io/UID/)
+
+-
