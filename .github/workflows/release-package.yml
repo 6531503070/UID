@@ -1,29 +1,38 @@
-name: Publish Docs
+name: Release Package
 
 on:
-    workflow_dispatch:
-    workflow_call:
+    push:
+        tags:
+            - 'v*.*.*'
 
 jobs:
-    publish:
+    release:
         runs-on: [ubuntu-latest]
         permissions:
             contents: write
+            packages: write
         steps:
             - uses: actions/checkout@v4
 
-            - uses: actions/setup-node@v4
-              with:
-                  node-version: '18'
+            - name: Install Rokit
+              uses: CompeyDev/setup-rokit@v0.1.2
 
-            - name: Install Moonwave
-              run: npm install -g moonwave@latest
+            - name: Build Package
+              run: rojo build --output Lyra.rbxm build.project.json
 
-            - name: Build & Publish Docs
-              run: |
-                  git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-                  git config --global user.email "support+actions@github.com"
-                  git config --global user.name "github-actions-bot"
-                  moonwave build --publish
+            - name: Create Release
+              run: gh release create $GITHUB_REF_NAME --generate-notes
               env:
                   GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+            - name: Upload Release Asset
+              run: gh release upload $GITHUB_REF_NAME Lyra.rbxm
+              env:
+                  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+    docs:
+        needs: release
+        permissions:
+            contents: write
+        uses: ./.github/workflows/publish-docs.yml
+        secrets: inherit
