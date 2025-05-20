@@ -22,5 +22,3 @@ An uid generator to represent an uniqueness for Roblox
    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=6531503070/UID&type=Date" />
  </picture>
 </a>
-
--
