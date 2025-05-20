@@ -14,15 +14,29 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4.2.2
 
-    - name: Install Aftman
-      uses: ok-nick/setup-aftman@v0.4.2
+      - name: Install Rokit
+        uses: CompeyDev/setup-rokit@v0.1.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Lint
-      run: |
-        selene ./modules
+      - name: Install Rokit Packages
+        run: rokit install --no-trust-check
+
+      - name: Generate Sourcemap
+        run: rojo sourcemap default.project.json -o sourcemap.json
+
+      - name: Curl Luau Types
+        shell: bash
+        run: curl -L "https://raw.githubusercontent.com/JohnnyMorganz/luau-lsp/main/scripts/globalTypes.d.lua" > "globalTypes.d.lua"
+
+      - name: Generate Sourcemap
+        run: rojo sourcemap default.project.json -o sourcemap.json
+
+      - name: Luau LSP Analysis
+        run: luau-lsp analyze --sourcemap sourcemap.json --ignore src/Shared/Packages/**/*.lua --ignore src/Shared/Packages/**/*.luau --ignore src/Shared/Packages/**/*.luau --ignore src/Shared/Utils/*.luau src
 
   style:
     name: Styling
