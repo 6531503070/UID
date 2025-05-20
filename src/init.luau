@@ -99,6 +99,14 @@ local blockBase256ASCII = table.create(32, 0)
 
 --- Generates a new Base256ASCII string
 ---
+--- :::tip
+--- We recommend using this UIDs for internal script usage and instance attributes.
+--- :::
+---
+--- :::danger
+--- You may facing UIDs information loss for specific use cases. like datastore, middlewares remote transmission, and more.
+--- :::
+---
 --- @param length number -- The length of the UID. Uniqueness is (256 ^ length) possibilities.
 --- @return string -- A random Base256ASCII string.
 function UID:NextBase256ASCII(length: number)
@@ -212,6 +220,10 @@ local BASE_94_JSONSAFE_CHARACTERS = {
 
 --- Generates a new Base94JSONSAFE string
 ---
+--- :::tip
+--- We recommend this UIDs for datastore related. as if zero-overhead and compact.
+--- :::
+---
 --- @param length number -- The length of the UID. Uniqueness is (94 ^ length) possibilities.
 --- @return string -- A random Base94JSONSAFE string.
 function UID:NextBase94JSONSAFE(length: number)
@@ -300,6 +312,10 @@ local BASE_64_URL_CHARACTERS = {
 
 --- Generates a new Base64URL string
 ---
+--- :::tip
+--- We recommend using this UIDs for human-friendly writing. like coupon/redeem codes, short urls, and more.
+--- :::
+---
 --- @param length number -- The length of the UID. Uniqueness is (64 ^ length) possibilities.
 --- @return string -- A random Base64URL string.
 function UID:NextBase64URL(length: number)
@@ -368,6 +384,11 @@ local function stringBuilderHexBlock16C15(input: { number }): string
 end
 
 --- Generates a new Hex string
+---
+--- :::note
+--- We recommend using this UIDs for general usage. but you may consider using other UIDs for specific use cases.
+--- and better compactness.
+--- :::
 ---
 --- @param length number -- The length of the UID. Uniqueness is (16 ^ length) possibilities.
 --- @return string -- A random Hex string.
