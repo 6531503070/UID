@@ -18,7 +18,7 @@ jobs:
         uses: CompeyDev/setup-rokit@v0.1.2
 
       - name: Build Package
-        run: rojo build --output Lyra.rbxm build.project.json
+        run: rojo build --output UID.rbxm build.project.json
 
       - name: Create Release
         run: gh release create $GITHUB_REF_NAME --generate-notes
@@ -26,7 +26,7 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - name: Upload Release Asset
-        run: gh release upload $GITHUB_REF_NAME Lyra.rbxm
+        run: gh release upload $GITHUB_REF_NAME UID.rbxm
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
