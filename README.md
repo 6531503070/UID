@@ -1,5 +1,7 @@
 # UID
 
+## About
+
 An uid generator to represent an uniqueness for Roblox
 
 ## Find the installation
