@@ -1,6 +1,6 @@
 # UID
 
-UID is a high-performance, flexible unique identifier (UID) generator for Roblox, supporting multiple encoding formats and robust randomization. It is designed for use cases where uniqueness, security, and format flexibility are required, such as database keys, session tokens, and more.
+UID is an unique identifier (UID) generator for Roblox, supporting multiple encoding formats and robust randomization. It is designed for use cases where uniqueness, security, and format flexibility are required, such as database keys, session tokens, and more.
 
 - **Multiple Formats:** Generate UIDs as GUID, Hex, Base64URL, Base94JSONSAFE, or Base256ASCII.
 - **Customizable:** Create generator instances with custom seeds for deterministic or random output.
