@@ -6,8 +6,8 @@
 
 local HttpService = game:GetService("HttpService")
 local GenerateGUID = HttpService.GenerateGUID
-local GlobalRandomizer = Random.new()
-local NextInteger = GlobalRandomizer.NextInteger
+local random = Random.new()
+local NextInteger = random.NextInteger
 
 --[=[
 	@class UID
@@ -112,7 +112,7 @@ local blockBase256ASCII = table.create(32, 0)
 function UID:NextBase256ASCII(length: number)
 	local self = self :: UID
 
-	local Randomizer = self.Randomizer or GlobalRandomizer
+	local Randomizer = self.Randomizer or random
 
 	for i = 1, length do
 		blockBase256ASCII[i] = NextInteger(Randomizer, 0, 255)
@@ -229,7 +229,7 @@ local BASE_94_JSONSAFE_CHARACTERS = {
 function UID:NextBase94JSONSAFE(length: number)
 	local self = self :: UID
 
-	local Randomizer = self.Randomizer or GlobalRandomizer
+	local Randomizer = self.Randomizer or random
 
 	for i = 1, length do
 		local pointer = NextInteger(Randomizer, 1, 93)
@@ -320,7 +320,7 @@ local BASE_64_URL_CHARACTERS = {
 --- @return string -- A random Base64URL string.
 function UID:NextBase64URL(length: number)
 	local self = self :: UID
-	local Randomizer = self.Randomizer or GlobalRandomizer
+	local Randomizer = self.Randomizer or random
 
 	for i = 1, length do
 		local pointer = NextInteger(Randomizer, 1, 64)
@@ -394,7 +394,7 @@ end
 --- @return string -- A random Hex string.
 function UID:NextHex(length: number)
 	local self = self :: UID
-	local Randomizer = self.Randomizer or GlobalRandomizer
+	local Randomizer = self.Randomizer or random
 	local blockOf16C13 = process16C15(Randomizer, length)
 
 	return stringBuilderHexBlock16C15(blockOf16C13)
