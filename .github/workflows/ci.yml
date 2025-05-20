@@ -47,7 +47,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: v2.0.2
-          args: --check ./modules
+          args: --check ./src
 
   # tests:
   #   name: Tests
