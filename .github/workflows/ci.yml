@@ -3,13 +3,12 @@ name: CI
 on:
   push:
     branches:
-    - main
+      - main
   pull_request:
     branches:
-    - main
+      - main
 
 jobs:
-
   lint:
     name: Lint
     runs-on: ubuntu-latest
@@ -42,14 +41,14 @@ jobs:
     name: Styling
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    - uses: JohnnyMorganz/stylua-action@v4
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        version: v2.0.2
-        args: --check ./modules
-  
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - uses: JohnnyMorganz/stylua-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: v2.0.2
+          args: --check ./modules
+
   # tests:
   #   name: Tests
   #   runs-on: ubuntu-latest
@@ -67,7 +66,7 @@ jobs:
 
   #   - name: Install Python dependencies
   #     run: pip install -r requirements.txt
-    
+
   #   - name: Run test builder
   #     run: python build_tests.py
 
@@ -82,7 +81,7 @@ jobs:
   #       API_KEY: ${{ secrets.RBXCLOUD_API_KEY }}
   #       FILE: test.rbxl
   #     run: rbxcloud experience publish -a "$API_KEY" -u "$UID" -p "$PID" -t published -f "$FILE"
-    
+
   #   - name: Run tests
   #     env:
   #       UID: 6900069600
