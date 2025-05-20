@@ -2,8 +2,36 @@ title = "UID"
 gitRepoUrl = "https://github.com/6531503070/UID"
 gitSourceBranch = "main"
 changelog = true
-classOrder = ["UID"]
+
+[[classOrder]]
+classes = ["UID"]
+
+[docusaurus]
+onBrokenLinks = "throw"
+onBrokenMarkdownLinks = "warn"
+tagline = "An uid generator to represent an uniqueness for Roblox"
+baseUrl = "/uid/"
 
 [home]
 enabled = true
 includeReadme = false
+
+[[home.features]]
+title = "Flexible"
+description = "Generate UIDs in various encodings and lengths."
+
+[[home.features]]
+title = "Developer-Friendly"
+description = "Simple & Easy to use and understand."
+
+[[footer.links]]
+title = "Links"
+
+[[footer.links.items]]
+label = "GitHub"
+href = "https://github.com/6531503070/UID"
+
+[[navbar.items]]
+href = "https://wally.run/package/6531503070/uid"
+label = "Wally"
+position = "right"

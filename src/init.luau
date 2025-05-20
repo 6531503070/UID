@@ -11,7 +11,7 @@ local NextInteger = GlobalRandomizer.NextInteger
 
 --[=[
 	@class UID
-	A typed luau module for generate uid to represent an uniqueness
+	An uid generator to represent an uniqueness for Roblox
 ]=]
 local UID = {}
 UID.__index = UID
@@ -45,11 +45,17 @@ function UID.isbase(uid: string, uidBase: UIDBase): boolean
 	if uidBase == "Hex" then
 		return string.find(uid, "^[0-9A-Fa-f]+$") ~= nil
 	elseif uidBase == "GUID" then
-		return string.find(uid, "^%x%x%x%x%x%x%x%x%-%x%x%x%x%-%x%x%x%x%-%x%x%x%x%-%x%x%x%x%x%x%x%x%x%x%x%x$") ~= nil
+		return string.find(
+			uid,
+			"^%x%x%x%x%x%x%x%x%-%x%x%x%x%-%x%x%x%x%-%x%x%x%x%-%x%x%x%x%x%x%x%x%x%x%x%x$"
+		) ~= nil
 	elseif uidBase == "Base64URL" then
 		return string.find(uid, "^[A-Za-z0-9%-_]+$") ~= nil
 	elseif uidBase == "Base94JSONSAFE" then
-		return string.find(uid, "^[0-9a-zA-Z!#$%%&'()*+,-./:;<=>?@%[%]^_`{|}~" .. string.char(127) .. "]+$") ~= nil
+		return string.find(
+			uid,
+			"^[0-9a-zA-Z!#$%%&'()*+,-./:;<=>?@%[%]^_`{|}~" .. string.char(127) .. "]+$"
+		) ~= nil
 	elseif uidBase == "Base256ASCII" then
 		return true -- Since every text character, emoji is based on ASCII at a fundamental level.
 	end
@@ -70,10 +76,11 @@ type UID = typeof(UID.new())
 
 local STRING_CACHES = table.create(16)
 
---- @private
---- @param input {number} -- Array of bytes to build string from
---- @param length number? -- Optional length to limit the string
---- @return string -- Built string from bytes
+--[[
+	@param input {number} -- Array of bytes to build string from
+	@param length number? -- Optional length to limit the string
+	@return string -- Built string from bytes
+]]
 local function stringBuilder(input: { number }, length: number?): string
 	local inputLength = if length then math.min(#input, length) else #input
 
@@ -314,7 +321,6 @@ local blockOf16C15 = table.create(16)
 local min16C15, max16C15 = 16 ^ (15 - 1) - 1, 16 ^ 15 - 1
 
 --[[
-	@private
 	@param Randomizer Random -- The randomizer instance
 	@param length number -- The length of the hex string to generate
 	@return {number} -- Array of processed hex blocks
@@ -331,14 +337,14 @@ local function process16C15(Randomizer: Random, length: number): { number }
 	local remainder = length % 15
 
 	if remainder > 0 then
-		blockOf16C15[iteration + 1] = NextInteger(Randomizer, 16 ^ (remainder - 1) - 1, 16 ^ remainder - 1)
+		blockOf16C15[iteration + 1] =
+			NextInteger(Randomizer, 16 ^ (remainder - 1) - 1, 16 ^ remainder - 1)
 	end
 
 	return blockOf16C15
 end
 
 --[[
-	@private
 	@param input {number} -- Array of processed hex blocks
 	@return string -- Built hex string
 ]]
@@ -349,7 +355,10 @@ local function stringBuilderHexBlock16C15(input: { number }): string
 		local j = math.min(i + 7996, inputLength)
 		local alloc = (j - i) + 1
 
-		table.insert(STRING_CACHES, string.format(string.rep([[%x]], alloc), table.unpack(input, i, j)))
+		table.insert(
+			STRING_CACHES,
+			string.format(string.rep([[%x]], alloc), table.unpack(input, i, j))
+		)
 	end
 
 	local blockOfString = table.concat(STRING_CACHES)
@@ -376,7 +385,8 @@ end
 function UID:Clone()
 	local self = self :: UID
 	local newUIDObject = table.clone(self)
-	newUIDObject.Randomizer = typeof(self.Randomizer) == "Random" and self.Randomizer:Clone() or nil
+	newUIDObject.Randomizer = typeof(self.Randomizer) == "Random" and self.Randomizer:Clone()
+		or nil
 
 	return setmetatable(newUIDObject, UID)
 end

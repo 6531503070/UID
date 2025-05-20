@@ -17,7 +17,7 @@ UID is a high-performance, flexible unique identifier (UID) generator for Roblox
 ## Quick Links
 
 - [Getting Started](./GettingStarted.md)
-- [API Reference](./API.md)
+- [API Reference](../api)
 
 ---
 
