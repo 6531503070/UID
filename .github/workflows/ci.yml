@@ -25,14 +25,14 @@ jobs:
         run: rokit install --no-trust-check
 
       - name: Generate Sourcemap
-        run: rojo sourcemap default.project.json -o sourcemap.json
+        run: argon sourcemap default.project.json -o sourcemap.json
 
       - name: Curl Luau Types
         shell: bash
         run: curl -L "https://raw.githubusercontent.com/JohnnyMorganz/luau-lsp/main/scripts/globalTypes.d.lua" > "globalTypes.d.lua"
 
       - name: Generate Sourcemap
-        run: rojo sourcemap default.project.json -o sourcemap.json
+        run: argon sourcemap default.project.json -o sourcemap.json
 
       - name: Luau LSP Analysis
         run: luau-lsp analyze --sourcemap sourcemap.json --ignore src/Shared/Packages/**/*.lua --ignore src/Shared/Packages/**/*.luau --ignore src/Shared/Packages/**/*.luau --ignore src/Shared/Utils/*.luau src
