@@ -1,9 +1,6 @@
 {
   "name": "UID",
   "tree": {
-    "$path": "src",
-    "DevPackages": {
-      "$path": "DevPackages"
-    }
+    "$path": "src"
   }
 }
